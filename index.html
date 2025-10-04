@@ -137,9 +137,13 @@
       color: red;
     }
 
-    /* --- Nút Gợi ý: giống nút chính nhưng không có nền, chỉ viền xám --- */
+    /* --- Nút Gợi ý: giống nút chính nhưng có 2 dòng text (title + sub) và không có nền, chỉ viền xám --- */
     .hint-box {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       margin: 15px auto 0;
       padding: 12px 25px;
       font-size: 16px;
@@ -152,10 +156,23 @@
       transition: background 0.2s, color 0.2s;
       width: 100%;                /* cùng kích thước với nút kiểm tra */
       box-sizing: border-box;
+      text-align: center;
     }
 
     .hint-box:hover {
       background: #f8f8f8;        /* hover nhẹ giúp người dùng biết có thể bấm */
+    }
+
+    .hint-title {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .hint-sub {
+      font-size: 12px;
+      color: #777;
+      line-height: 1;
     }
 
     /* responsive nhỏ */
@@ -178,7 +195,7 @@
       <li><input type="checkbox" value="5" id="ans5"><label for="ans5">Lời khai nghi phạm: Nguyễn Ngọc</label></li>
       <li><input type="checkbox" value="6" id="ans6"><label for="ans6">Lời khai nghi phạm:Vũ Hải Yến</label></li>
       <li><input type="checkbox" value="7" id="ans7"><label for="ans7">Lời khai nghi phạm: Hoàng TIến</label></li>
-      <li><input type="checkbox" value="8" id="ans8"><label for="ans8">Lời khai nghi phạm: Hoàng TIến</label></li>
+      <li><input type="checkbox" value="8" id="ans8"><label for="ans8">Lời khai nghi phạm: Hoàng Tiến</label></li>
       <li><input type="checkbox" value="9" id="ans9"><label for="ans9">Ảnh hiện trường</label></li>
       <li><input type="checkbox" value="10" id="ans10"><label for="ans10">Giám định mẫu vật</label></li>
       <li><input type="checkbox" value="11" id="ans11"><label for="ans11">Danh sách cuộc gọi cuối của nạn nhân</label></li>
@@ -187,8 +204,11 @@
     <!-- nút kiểm tra đáp án (nguyên bản) -->
     <button onclick="checkAnswers()">Kiểm tra đáp án</button>
 
-    <!-- nút gợi ý mới (bằng kích thước nút trên, chỉ viền xám) -->
-    <button class="hint-box" onclick="showHintPopup()">Gợi ý</button>
+    <!-- nút gợi ý mới (bằng kích thước nút trên, có title + sub) -->
+    <button class="hint-box" onclick="showHintPopup()">
+      <span class="hint-title">Gợi ý</span>
+      <span class="hint-sub">(chỉ sử dụng gợi ý khi đã rất bế tắc)</span>
+    </button>
   </div>
 
   <div id="result-img">
