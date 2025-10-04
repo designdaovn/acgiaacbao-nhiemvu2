@@ -59,6 +59,7 @@
       flex: 1;
     }
 
+    /* Nút mặc định (đã chỉnh để cả hai nút có cùng kích thước) */
     button {
       display: block;
       margin: 0 auto;
@@ -71,6 +72,8 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.3s;
+      width: 100%;         /* <-- đảm bảo cùng kích thước */
+      box-sizing: border-box;
     }
 
     button:hover {
@@ -133,6 +136,32 @@
     .popup-close:hover {
       color: red;
     }
+
+    /* --- Nút Gợi ý: giống nút chính nhưng không có nền, chỉ viền xám --- */
+    .hint-box {
+      display: block;
+      margin: 15px auto 0;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      background: transparent;    /* không nền */
+      border: 2px solid #555;     /* viền xám đen */
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      width: 100%;                /* cùng kích thước với nút kiểm tra */
+      box-sizing: border-box;
+    }
+
+    .hint-box:hover {
+      background: #f8f8f8;        /* hover nhẹ giúp người dùng biết có thể bấm */
+    }
+
+    /* responsive nhỏ */
+    @media (max-width: 480px) {
+      .quiz-container { padding: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -155,18 +184,30 @@
       <li><input type="checkbox" value="11" id="ans11"><label for="ans11">Danh sách cuộc gọi cuối của nạn nhân</label></li>
     </ul>
 
+    <!-- nút kiểm tra đáp án (nguyên bản) -->
     <button onclick="checkAnswers()">Kiểm tra đáp án</button>
+
+    <!-- nút gợi ý mới (bằng kích thước nút trên, chỉ viền xám) -->
+    <button class="hint-box" onclick="showHintPopup()">Gợi ý</button>
   </div>
 
   <div id="result-img">
     <img id="result-image" src="" alt="Kết quả">
   </div>
 
-  <!-- Popup hiển thị khi sai -->
+  <!-- Popup hiển thị khi sai (giữ nguyên) -->
   <div class="popup" id="popup">
     <div class="popup-content">
-      <span class="popup-close" onclick="closePopup()">×</span>
+      <span class="popup-close" onclick="closePopup('popup')">×</span>
       <img src="https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/khi%20chon%20dap%20an%20sai.png" alt="Sai rồi">
+    </div>
+  </div>
+
+  <!-- Popup gợi ý (mới) -->
+  <div class="popup" id="hint-popup">
+    <div class="popup-content">
+      <span class="popup-close" onclick="closePopup('hint-popup')">×</span>
+      <img id="hint-popup-img" src="" alt="Gợi ý">
     </div>
   </div>
 
@@ -197,13 +238,33 @@
       }
     }
 
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
+    // đóng popup chung (nhận id để dùng cho cả 2 popup)
+    function closePopup(id) {
+      const p = document.getElementById(id);
+      if (p) p.style.display = 'none';
     }
+
+    // hiển thị popup gợi ý (thay HINT_IMAGE_URL bằng link ảnh của bạn)
+    function showHintPopup() {
+      const HINT_IMAGE_URL = "https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/goi%20y%202.png";
+      // thay bằng URL ảnh bạn muốn hiển thị trong popup gợi ý
+      document.getElementById('hint-popup-img').src = HINT_IMAGE_URL;
+      document.getElementById('hint-popup').style.display = 'flex';
+    }
+
+    // đóng popup khi click ra ngoài nội dung popup
+    document.querySelectorAll('.popup').forEach(p => {
+      p.addEventListener('click', (e) => {
+        if (e.target === p) p.style.display = 'none';
+      });
+    });
+
+    // đóng popup bằng phím Esc
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
+      }
+    });
   </script>
 </body>
 </html>
-
-
-
-
