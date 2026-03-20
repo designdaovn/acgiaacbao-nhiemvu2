@@ -2,232 +2,1002 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ác Giả Ác Báo - Nhiệm Vụ 1</title>
+
+  <!-- ══════════════════════════════════════════════════
+       FAVICON — THAY LINK Ở ĐÂY
+       Sau khi upload file lên GitHub, lấy link raw và dán vào href
+       Ví dụ: href="https://raw.githubusercontent.com/designdaovn/Hosomat-acgiaacbao/refs/heads/main/favicon.png"
+       Hỗ trợ: .png · .ico · .svg
+       ══════════════════════════════════════════════════ -->
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/designdaovn/Hosomat-acgiaacbao/refs/heads/main/favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
-    body {
-      font-family: "Arial", sans-serif;
-      background: #e8f5e9;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+    :root {
+      --gold: #ebd11e;
+      --dark: #2a2a2a;
+      --dark2: #1a1a1a;
+      --dark3: #111;
+      --gold-dim: rgba(235,209,30,0.15);
+      --gold-mid: rgba(235,209,30,0.4);
+      --paper: #f5f0e8;
     }
 
-    .quiz-container {
-      max-width: 700px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      text-align: left;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--dark3);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ---- WRAPPER ---- */
+    .case-file {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 720px;
+      animation: fadeSlideIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- BANNER ---- */
+    .case-banner {
+      background: var(--gold);
+      color: var(--dark);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      clip-path: polygon(0 0, 100% 0, 97% 100%, 3% 100%);
+    }
+
+    .case-banner .badge,
+    .case-banner .case-id {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ---- CARD ---- */
+    .card {
+      background: var(--dark2);
+      border: 1px solid rgba(235,209,30,0.3);
+      border-top: none;
+      padding: 36px 40px 40px;
+      position: relative;
+      box-shadow:
+        0 0 60px rgba(235,209,30,0.07),
+        0 20px 60px rgba(0,0,0,0.8),
+        inset 0 0 80px rgba(0,0,0,0.3);
+    }
+
+    .card::before, .card::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .card::before { bottom: 16px; left: 16px;  border-width: 0 0 2px 2px; }
+    .card::after  { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; }
+
+    /* ---- DIVIDER ---- */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 28px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-mid), transparent);
+    }
+    .divider-icon { color: var(--gold); font-size: 16px; }
+
+    /* ---- HEADINGS ---- */
+    .case-label {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0.7;
+      text-align: center;
+      margin-bottom: 6px;
     }
 
     h2 {
-      margin-bottom: 10px;
-      color: #333;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      color: var(--paper);
       text-align: center;
+      line-height: 1.3;
+      text-shadow: 0 0 30px rgba(235,209,30,0.2);
+      margin-bottom: 10px;
     }
 
     .subtitle {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
       font-size: 16px;
-      color: #666;
-      margin-bottom: 20px;
+      color: rgba(245,240,232,0.55);
       text-align: center;
+      margin-bottom: 28px;
+      line-height: 1.5;
     }
 
+    /* ---- INSTRUCTION ---- */
+    .instruction {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-mid);
+      border-radius: 4px;
+      padding: 8px 14px;
+      margin: 0 auto 26px;
+    }
+
+    .instruction span {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    /* ---- ANSWERS ---- */
     .answers {
       list-style: none;
       padding: 0;
-      margin: 0 0 25px 0;
-    }
-
-    .answers li {
-      margin-bottom: 12px;
+      margin: 0 0 28px 0;
       display: flex;
-      align-items: flex-start;
+      flex-direction: column;
       gap: 10px;
     }
 
-    .answers input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
+    .answers li { position: relative; }
+
+    .answers input[type="checkbox"] { display: none; }
 
     .answers label {
-      cursor: pointer;
-      flex: 1;
-    }
-
-    /* Nút mặc định (đã chỉnh để cả hai nút có cùng kích thước) */
-    button {
-      display: block;
-      margin: 0 auto;
-      padding: 12px 25px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      background: #28a745;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-      width: 100%;         /* <-- đảm bảo cùng kích thước */
-      box-sizing: border-box;
-    }
-
-    button:hover {
-      background: #218838;
-    }
-
-    #result-img {
-      display: none;
-      margin-top: 30px;
-      text-align: center;
-    }
-
-    #result-img img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-
-    /* --- Popup Box-up khi sai --- */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
+      display: flex;
       align-items: center;
-      z-index: 9999;
-    }
-
-    .popup-content {
-      position: relative;
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      text-align: center;
-    }
-
-    .popup-content img {
-      max-width: 100%;
-      border-radius: 10px;
-    }
-
-    .popup-close {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #333;
+      gap: 14px;
+      padding: 13px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(235,209,30,0.12);
+      border-radius: 4px;
       cursor: pointer;
+      transition: all 0.25s ease;
+      color: rgba(245,240,232,0.8);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 16.5px;
+      line-height: 1.4;
+      position: relative;
+      overflow: hidden;
     }
 
-    .popup-close:hover {
-      color: red;
+    .answers label::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: rgba(235,209,30,0.2);
+      transition: background 0.25s ease;
     }
 
-    /* --- Nút Gợi ý: giống nút chính nhưng có 2 dòng text (title + sub) và không có nền, chỉ viền xám --- */
-    .hint-box {
+    .check-box {
+      width: 20px; height: 20px; min-width: 20px;
+      border: 2px solid rgba(235,209,30,0.35);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      background: transparent;
+    }
+
+    .check-box::after {
+      content: '✓';
+      font-size: 13px;
+      color: var(--dark);
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .evidence-num {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(235,209,30,0.4);
+      min-width: 28px;
+    }
+
+    .answers label:hover {
+      background: rgba(235,209,30,0.06);
+      border-color: rgba(235,209,30,0.35);
+      color: var(--paper);
+    }
+    .answers label:hover::before { background: rgba(235,209,30,0.5); }
+    .answers label:hover .check-box { border-color: var(--gold); }
+
+    .answers input[type="checkbox"]:checked + label {
+      background: rgba(235,209,30,0.1);
+      border-color: var(--gold);
+      color: var(--paper);
+    }
+    .answers input[type="checkbox"]:checked + label::before { background: var(--gold); }
+    .answers input[type="checkbox"]:checked + label .check-box {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .answers input[type="checkbox"]:checked + label .check-box::after { opacity: 1; }
+
+    /* ---- BUTTONS AREA ---- */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Primary submit button */
+    .btn-submit {
+      position: relative;
+      padding: 14px 40px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      letter-spacing: 2px;
+      color: var(--dark);
+      background: var(--gold);
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(235,209,30,0.3);
+      width: 100%;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(235,209,30,0.45), 0 0 0 3px rgba(235,209,30,0.15);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* Ghost hint button */
+    .btn-hint {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin: 15px auto 0;
-      padding: 12px 25px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
-      background: transparent;    /* không nền */
-      border: 2px solid #555;     /* viền xám đen */
-      border-radius: 10px;
+      gap: 4px;
+      padding: 12px 20px;
+      background: transparent;
+      border: 1px solid rgba(235,209,30,0.25);
+      border-radius: 3px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      width: 100%;                /* cùng kích thước với nút kiểm tra */
-      box-sizing: border-box;
-      text-align: center;
+      transition: all 0.25s ease;
+      width: 100%;
     }
 
-    .hint-box:hover {
-      background: #f8f8f8;        /* hover nhẹ giúp người dùng biết có thể bấm */
+    .btn-hint:hover {
+      background: var(--gold-dim);
+      border-color: rgba(235,209,30,0.5);
+      transform: none;
+      box-shadow: none;
     }
 
     .hint-title {
-      font-size: 16px;
-      font-weight: bold;
-      line-height: 1;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: rgba(235,209,30,0.7);
     }
 
     .hint-sub {
-      font-size: 12px;
-      color: #777;
-      line-height: 1;
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(245,240,232,0.3);
+      letter-spacing: 1px;
     }
 
-    /* responsive nhỏ */
-    @media (max-width: 480px) {
-      .quiz-container { padding: 18px; }
+    /* ---- FOOTER ---- */
+    .case-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding: 0 4px;
+    }
+
+    .footer-mono {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(235,209,30,0.25);
+      letter-spacing: 2px;
+    }
+
+    /* ---- RESULT SCREEN ---- */
+    #result-img {
+      display: none;
+      animation: fadeSlideIn 0.6s ease forwards;
+    }
+
+    .result-card {
+      background: var(--dark2);
+      border: 2px solid var(--gold);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(235,209,30,0.12), 0 20px 60px rgba(0,0,0,0.8);
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(235,209,30,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .result-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 0;
+    }
+
+    /* ---- POPUP ---- */
+    .popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .popup-content {
+      position: relative;
+      background: var(--dark2);
+      border: 1px solid rgba(235,209,30,0.3);
+      border-radius: 6px;
+      max-width: 460px;
+      width: 90%;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* popup SAI — viền đỏ trên */
+    .popup-content.is-wrong { border-top: 4px solid #c0392b; }
+    /* popup GỢI Ý — viền vàng trên */
+    .popup-content.is-hint  { border-top: 4px solid var(--gold); }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    /* Ảnh trong popup giữ nguyên */
+    .popup-img-wrap {
+      width: 100%;
+      line-height: 0;
+    }
+    .popup-img-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Text block dưới ảnh */
+    .popup-body {
+      padding: 22px 28px 28px;
+      text-align: center;
+    }
+
+    .popup-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .popup-content.is-wrong .popup-title { color: #e74c3c; }
+    .popup-content.is-hint  .popup-title { color: var(--gold); }
+
+    .popup-msg {
+      font-family: 'Lora', Georgia, serif;
+      font-style: italic;
+      font-size: 15.5px;
+      color: rgba(245,240,232,0.6);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .popup-close-btn {
+      display: inline-block;
+      padding: 10px 30px;
+      background: transparent;
+      border: 1px solid rgba(235,209,30,0.4);
+      color: var(--gold);
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: auto;
+      box-shadow: none;
+    }
+
+    .popup-close-btn:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      transform: none;
+      box-shadow: none;
+    }
+
+    .popup-close-x {
+      position: absolute;
+      top: 10px; right: 14px;
+      font-size: 20px;
+      font-weight: bold;
+      color: rgba(245,240,232,0.3);
+      cursor: pointer;
+      line-height: 1;
+      z-index: 10;
+      transition: color 0.2s;
+    }
+    .popup-close-x:hover { color: #e74c3c; }
+
+    /* ---- RESULT NAV BUTTONS ---- */
+    .result-nav {
+      display: flex;
+      gap: 12px;
+      padding: 24px 28px 28px;
+    }
+
+    .btn-nav {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-size: inherit;
+      width: auto;
+      box-shadow: none;
+    }
+
+    /* Nút QUAY LẠI — ghost style */
+    .btn-back {
+      background: transparent;
+      border: 1px solid rgba(235,209,30,0.3);
+      justify-content: flex-start;
+    }
+    .btn-back:hover {
+      background: var(--gold-dim);
+      border-color: rgba(235,209,30,0.6);
+      transform: translateX(-2px);
+      box-shadow: none;
+    }
+    .btn-back .nav-arrow { color: rgba(235,209,30,0.6); font-size: 18px; }
+    .btn-back .nav-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: rgba(235,209,30,0.7);
+      display: block;
+    }
+    .btn-back .nav-sub {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(245,240,232,0.3);
+      letter-spacing: 1px;
+      display: block;
+      margin-top: 3px;
+    }
+
+    /* Nút TIẾP TỤC — solid gold style */
+    .btn-next {
+      background: var(--gold);
+      border: none;
+      justify-content: space-between;
+    }
+    .btn-next:hover {
+      background: #f5df30;
+      transform: translateX(2px);
+      box-shadow: 0 6px 24px rgba(235,209,30,0.4);
+    }
+    .btn-next .nav-arrow { color: var(--dark); font-size: 18px; font-weight: bold; }
+    .btn-next .nav-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--dark);
+      display: block;
+    }
+    .btn-next .nav-sub {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      color: rgba(42,42,42,0.6);
+      letter-spacing: 1px;
+      display: block;
+      margin-top: 3px;
+    }
+
+    /* ---- MUSIC PLAYER ---- */
+    .music-player {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      background: var(--dark2);
+      border: 1px solid rgba(235,209,30,0.35);
+      border-radius: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+    .music-player.is-playing {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 14px rgba(235,209,30,0.28);
+    }
+
+    /* Nút play/pause */
+    .mp-play {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gold);
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+      box-shadow: none;
+      border-radius: 0;
+      transition: background 0.2s;
+    }
+    .mp-play:hover { background: #f5df30; transform: none; box-shadow: none; }
+    .mp-play svg  { width: 15px; height: 15px; fill: var(--dark); }
+
+    /* Panel mở rộng — ẩn mặc định, hiện khi hover hoặc đang phát */
+    .mp-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-width 0.35s ease, opacity 0.25s ease;
+      padding: 0;
+    }
+    .music-player:hover .mp-panel {
+      max-width: 200px;
+      opacity: 1;
+      padding: 0 12px 0 10px;
+    }
+
+    /* Tên nhạc marquee */
+    .mp-label-wrap {
+      overflow: hidden;
+      width: 76px;
+      flex-shrink: 0;
+    }
+    .mp-label {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 1px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .music-player.is-playing .mp-label { animation: marquee 9s linear infinite; }
+    @keyframes marquee {
+      0%   { transform: translateX(80px); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Thanh âm lượng */
+    .mp-volume {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 68px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(
+        to right,
+        var(--gold) 0%,
+        var(--gold) var(--vol, 70%),
+        rgba(235,209,30,0.2) var(--vol, 70%),
+        rgba(235,209,30,0.2) 100%
+      );
+      outline: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .mp-volume::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--gold);
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(235,209,30,0.5);
+    }
+    .mp-volume::-moz-range-thumb {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* ---- FAB BUTTONS (góc dưới phải) ---- */
+    .fab-group {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .fab-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Nhãn tooltip hiện khi hover */
+    .fab-label {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--gold);
+      background: var(--dark2);
+      border: 1px solid rgba(235,209,30,0.3);
+      padding: 5px 10px;
+      border-radius: 3px;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+    }
+
+    .fab-item:hover .fab-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Nút tròn */
+    .fab-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(235,209,30,0.35);
+      background: var(--dark2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+
+    .fab-btn svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .fab-item:hover .fab-btn {
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 6px 20px rgba(235,209,30,0.35);
+      transform: scale(1.08);
+    }
+
+    /* Đảo màu icon khi hover (svg fill) */
+    .fab-btn .icon-default { fill: var(--gold); transition: fill 0.2s; }
+    .fab-item:hover .fab-btn .icon-default { fill: var(--dark); }
+
+    @media (max-width: 500px) {
+      .fab-group { bottom: 14px; right: 14px; }
+    }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .card { padding: 24px 18px 28px; }
+      h2 { font-size: 20px; }
+      .popup-body { padding: 18px 20px 24px; }
+      .result-nav { flex-direction: column; padding: 18px 18px 24px; }
+      .music-player { top: 10px; right: 10px; }
+    }
+
+    /* Mobile/touch: panel nhạc luôn thu gọn, chỉ hiện nút play/pause */
+    @media (pointer: coarse) {
+      .music-player:hover .mp-panel { max-width: 0; opacity: 0; padding: 0; }
+      .music-player.mp-expanded .mp-panel {
+        max-width: 200px;
+        opacity: 1;
+        padding: 0 12px 0 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container" id="quiz">
-    <h2>Câu hỏi: Tài liệu nào đã bị làm giả?</h2>
-    <div class="subtitle">Trước khi chọn đáp án, hãy chắc rằng bạn đã tìm ra 2 đặc điểm của tài liệu bị làm giả</div>
+  <div class="scanlines"></div>
 
-    <ul class="answers" id="q1">
-      <li><input type="checkbox" value="0" id="ans0"><label for="ans0">Báo cáo vụ án</label></li>
-      <li><input type="checkbox" value="1" id="ans1"><label for="ans1">Câu hỏi về nạn nhân</label></li>
-      <li><input type="checkbox" value="2" id="ans2"><label for="ans2">Lời khai nhân chứng: Nguyễn Văn Hải</label></li>
-      <li><input type="checkbox" value="3" id="ans3"><label for="ans3">Lời khai nhân chứng: Nguyễn Thị Lan</label></li>
-      <li><input type="checkbox" value="4" id="ans4"><label for="ans4">Lời khai nhân chứng: Nguyễn Nhật Linh</label></li>
-      <li><input type="checkbox" value="5" id="ans5"><label for="ans5">Lời khai nghi phạm: Nguyễn Ngọc</label></li>
-      <li><input type="checkbox" value="6" id="ans6"><label for="ans6">Lời khai nghi phạm:Vũ Hải Yến</label></li>
-      <li><input type="checkbox" value="7" id="ans7"><label for="ans7">Lời khai nghi phạm: Hoàng TIến</label></li>
-      <li><input type="checkbox" value="8" id="ans8"><label for="ans8">Lời khai nghi phạm: Hoàng Tiến</label></li>
-      <li><input type="checkbox" value="9" id="ans9"><label for="ans9">Hiện trường (Ảnh hiện trường hoặc hiện trường ảo)</label></li>
-      <li><input type="checkbox" value="10" id="ans10"><label for="ans10">Giám định mẫu vật</label></li>
-      <li><input type="checkbox" value="11" id="ans11"><label for="ans11">Danh sách cuộc gọi cuối của nạn nhân</label></li>
-    </ul>
+  <!-- ══════════════════════════════════════════════════
+       TRÌNH PHÁT NHẠC — CỐ ĐỊNH GÓC TRÊN PHẢI
+       Để thay nhạc: sửa src trong thẻ <audio> bên dưới
+       ══════════════════════════════════════════════════ -->
+  <div class="music-player" id="musicPlayer">
 
-    <!-- nút kiểm tra đáp án (nguyên bản) -->
-    <button onclick="checkAnswers()">Kiểm tra đáp án</button>
-
-    <!-- nút gợi ý mới (bằng kích thước nút trên, có title + sub) -->
-    <button class="hint-box" onclick="showHintPopup()">
-      <span class="hint-title">Gợi ý</span>
-      <span class="hint-sub">(chỉ sử dụng gợi ý khi đã rất bế tắc)</span>
+    <!-- Nút Play / Pause -->
+    <button class="mp-play" id="mpPlayBtn" onclick="toggleMusic()" title="Phát / Tạm dừng">
+      <!-- Icon Play (mặc định) -->
+      <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      <!-- Icon Pause (ẩn khi chưa phát) -->
+      <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
     </button>
+
+    <!-- Panel tên nhạc + âm lượng -->
+    <div class="mp-panel">
+      <div class="mp-label-wrap">
+        <span class="mp-label" id="mpLabel">♪ NHẠC NỀN</span>
+      </div>
+      <!-- Thanh âm lượng: kéo để thay đổi -->
+      <input type="range" class="mp-volume" id="mpVolume"
+             min="0" max="1" step="0.01" value="0.7"
+             oninput="setVolume(this.value)" title="Âm lượng">
+    </div>
+
   </div>
 
-  <div id="result-img">
-    <img id="result-image" src="" alt="Kết quả">
-  </div>
+  <!-- ══════════════════════════════════════════════════
+       THAY LINK NHẠC Ở ĐÂY ↓
+       src="URL_FILE_NHẠC_CỦA_BẠN"
+       Hỗ trợ: .mp3 · .ogg · .wav
+       ══════════════════════════════════════════════════ -->
+  <audio id="bgMusic" loop>
+    <source src="Shadows in the Evidence.mp3" type="audio/mpeg">
+  </audio>
+  <!-- ══════════════════════════════════════════════════ -->
 
-  <!-- Popup hiển thị khi sai (giữ nguyên) -->
+  <div class="case-file">
+
+    <!-- ====== QUIZ ====== -->
+    <div id="quiz">
+      <div class="case-banner">
+        <span class="badge">🔍 Điều Tra Viên</span>
+        <span class="case-id">MÃ VỤ ÁN: D-26082019</span>
+      </div>
+
+      <div class="card">
+        <div class="case-label">— Nhiệm Vụ Phân Tích —</div>
+        <h2>Tài Liệu Nào Đã Bị Làm Giả?</h2>
+
+        <div class="divider"><span class="divider-icon">⬡</span></div>
+
+        <p class="subtitle">Trước khi chọn đáp án, hãy chắc rằng bạn đã tìm ra<br>2 đặc điểm của tài liệu bị làm giả</p>
+
+        <div class="instruction">
+          <span>⬡ CHỌN ĐÚNG 1 TÀI LIỆU TRONG SỐ SAU ⬡</span>
+        </div>
+
+        <ul class="answers" id="q1">
+          <li>
+            <input type="checkbox" value="0" id="ans0">
+            <label for="ans0"><div class="check-box"></div><span class="evidence-num">E-01</span>Báo cáo vụ án</label>
+          </li>
+          <li>
+            <input type="checkbox" value="1" id="ans1">
+            <label for="ans1"><div class="check-box"></div><span class="evidence-num">E-02</span>Câu hỏi về nạn nhân</label>
+          </li>
+          <li>
+            <input type="checkbox" value="2" id="ans2">
+            <label for="ans2"><div class="check-box"></div><span class="evidence-num">E-03</span>Lời khai nhân chứng: Nguyễn Văn Hải</label>
+          </li>
+          <li>
+            <input type="checkbox" value="3" id="ans3">
+            <label for="ans3"><div class="check-box"></div><span class="evidence-num">E-04</span>Lời khai nhân chứng: Nguyễn Thị Lan</label>
+          </li>
+          <li>
+            <input type="checkbox" value="4" id="ans4">
+            <label for="ans4"><div class="check-box"></div><span class="evidence-num">E-05</span>Lời khai nhân chứng: Nguyễn Nhật Linh</label>
+          </li>
+          <li>
+            <input type="checkbox" value="5" id="ans5">
+            <label for="ans5"><div class="check-box"></div><span class="evidence-num">E-06</span>Lời khai nghi phạm: Nguyễn Ngọc</label>
+          </li>
+          <li>
+            <input type="checkbox" value="6" id="ans6">
+            <label for="ans6"><div class="check-box"></div><span class="evidence-num">E-07</span>Lời khai nghi phạm: Vũ Hải Yến</label>
+          </li>
+          <li>
+            <input type="checkbox" value="7" id="ans7">
+            <label for="ans7"><div class="check-box"></div><span class="evidence-num">E-08</span>Lời khai nghi phạm: Hoàng Tiến</label>
+          </li>
+          <li>
+            <input type="checkbox" value="8" id="ans8">
+            <label for="ans8"><div class="check-box"></div><span class="evidence-num">E-09</span>Ảnh hiện trường</label>
+          </li>
+          <li>
+            <input type="checkbox" value="9" id="ans9">
+            <label for="ans9"><div class="check-box"></div><span class="evidence-num">E-10</span>Giám định mẫu vật</label>
+          </li>
+          <li>
+            <input type="checkbox" value="10" id="ans10">
+            <label for="ans10"><div class="check-box"></div><span class="evidence-num">E-11</span>Danh sách cuộc gọi cuối của nạn nhân</label>
+          </li>
+        </ul>
+
+        <div class="btn-group">
+          <button class="btn-submit" onclick="checkAnswers()">XÁC NHẬN PHÂN TÍCH</button>
+
+          <button class="btn-hint" onclick="showHintPopup()">
+            <span class="hint-title">⬡ GỢI Ý</span>
+            <span class="hint-sub">chỉ sử dụng khi đã rất bế tắc</span>
+          </button>
+        </div>
+
+        <div class="case-footer">
+          <span class="footer-mono">BẢO MẬT — CẤP ĐỘ 3</span>
+          <span class="footer-mono">2025 · HỒ SƠ MẬT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== RESULT ====== -->
+    <div id="result-img">
+      <div class="case-banner">
+        <span class="badge">✔ KẾT QUẢ PHÂN TÍCH</span>
+        <span class="case-id">MÃ VỤ ÁN: #VN-0049</span>
+      </div>
+      <div class="card result-card">
+        <img id="result-image" src="" alt="Kết quả">
+
+        <!-- ── Nút điều hướng ── -->
+        <div class="result-nav">
+
+          <!-- [QUAY LẠI] Hiện lại trang câu hỏi, reset toàn bộ checkbox -->
+          <button class="btn-nav btn-back" onclick="goBack()">
+            <span class="nav-arrow">←</span>
+            <span class="nav-text">
+              <span class="nav-title">QUAY LẠI</span>
+              <span class="nav-sub">Thử lại từ đầu</span>
+            </span>
+          </button>
+
+          <!-- ══════════════════════════════════════════════
+               [TIẾP TỤC] ← ĐIỀN LINK TRANG TIẾP THEO VÀO
+               biến NEXT_PAGE_URL bên dưới trong thẻ <script>
+               ══════════════════════════════════════════════ -->
+          <button class="btn-nav btn-next" onclick="goNext()">
+            <span class="nav-text">
+              <span class="nav-title">TIẾP TỤC</span>
+              <span class="nav-sub">Nhiệm vụ kế tiếp</span>
+            </span>
+            <span class="nav-arrow">→</span>
+          </button>
+
+        </div>
+        <!-- ── /Nút điều hướng ── -->
+
+      </div>
+    </div>
+
+  </div><!-- /.case-file -->
+
+
+  <!-- ====== POPUP SAI ====== -->
   <div class="popup" id="popup">
-    <div class="popup-content">
-      <span class="popup-close" onclick="closePopup('popup')">×</span>
-      <img src="https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/khi%20chon%20dap%20an%20sai.png" alt="Sai rồi">
+    <div class="popup-content is-wrong">
+      <span class="popup-close-x" onclick="closePopup('popup')">×</span>
+      <div class="popup-img-wrap">
+        <img id="popup-img" src="" alt="Sai rồi">
+      </div>
+      <div class="popup-body">
+        <div class="popup-title">PHÂN TÍCH SAI!</div>
+        <p class="popup-msg">
+          Hướng điều tra chưa chính xác.<br>
+          Hãy xem lại toàn bộ hồ sơ và thử lại — manh mối vẫn còn đó.
+        </p>
+        <button class="popup-close-btn" onclick="closePopup('popup')">THỬ LẠI</button>
+      </div>
     </div>
   </div>
 
-  <!-- Popup gợi ý (mới) -->
+  <!-- ====== POPUP GỢI Ý ====== -->
   <div class="popup" id="hint-popup">
-    <div class="popup-content">
-      <span class="popup-close" onclick="closePopup('hint-popup')">×</span>
-      <img id="hint-popup-img" src="" alt="Gợi ý">
+    <div class="popup-content is-hint">
+      <span class="popup-close-x" onclick="closePopup('hint-popup')">×</span>
+      <div class="popup-img-wrap">
+        <img id="hint-popup-img" src="" alt="Gợi ý">
+      </div>
+      <div class="popup-body">
+        <div class="popup-title">GỢI Ý</div>
+        <p class="popup-msg">
+          Đây là manh mối dành cho bạn.<br>
+          Hãy suy nghĩ thật kỹ trước khi đưa ra quyết định.
+        </p>
+        <button class="popup-close-btn" onclick="closePopup('hint-popup')">ĐÓNG GỢI Ý</button>
+      </div>
     </div>
   </div>
 
@@ -239,53 +1009,148 @@
       });
 
       if (selected.length !== 1) {
-        alert("Bạn phải chọn đúng 1 đáp án!");
+        alert("⚠ Bạn phải chọn đúng 1 tài liệu!");
         return;
       }
 
-      const correct = [11]; // đáp án đúng
-      selected.sort();
+      const correct = [10]; // E-11: Danh sách cuộc gọi cuối của nạn nhân (value=10)
+      selected.sort((a, b) => a - b);
 
       if (JSON.stringify(selected) === JSON.stringify(correct)) {
-        // Nếu đúng → ẩn quiz, hiện ảnh kết quả
         document.getElementById('quiz').style.display = 'none';
         document.getElementById('result-img').style.display = 'block';
         document.getElementById('result-image').src =
           "https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/Giai%20thich%20NV2%20copy.jpg";
       } else {
-        // Nếu sai → hiện popup
+        document.getElementById('popup-img').src =
+          "https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/khi%20chon%20dap%20an%20sai.png";
         document.getElementById('popup').style.display = 'flex';
       }
     }
 
-    // đóng popup chung (nhận id để dùng cho cả 2 popup)
     function closePopup(id) {
       const p = document.getElementById(id);
       if (p) p.style.display = 'none';
     }
 
-    // hiển thị popup gợi ý (thay HINT_IMAGE_URL bằng link ảnh của bạn)
+    // ══════════════════════════════════════════════════════
+    // [LINK TRANG TIẾP THEO] ← THAY URL Ở ĐÂY
+    // Ví dụ: const NEXT_PAGE_URL = "https://example.com/nhiem-vu-2";
+    // ══════════════════════════════════════════════════════
+    const NEXT_PAGE_URL = "https://designdaovn.github.io/acgiaacbao-nhiemvu2/";
+
+    function goNext() {
+      window.location.href = NEXT_PAGE_URL;
+    }
+
+    function goBack() {
+      // Reset toàn bộ checkbox
+      document.querySelectorAll('#q1 input[type="checkbox"]').forEach(cb => cb.checked = false);
+      // Ẩn màn hình kết quả, hiện lại quiz
+      document.getElementById('result-img').style.display = 'none';
+      document.getElementById('quiz').style.display = 'block';
+      // Scroll lên đầu
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function showHintPopup() {
       const HINT_IMAGE_URL = "https://raw.githubusercontent.com/designdaovn/acgiaacbao-nhiemvu2/refs/heads/main/goi%20y%202.png";
-      // thay bằng URL ảnh bạn muốn hiển thị trong popup gợi ý
       document.getElementById('hint-popup-img').src = HINT_IMAGE_URL;
       document.getElementById('hint-popup').style.display = 'flex';
     }
 
-    // đóng popup khi click ra ngoài nội dung popup
+    // Đóng popup khi click ra ngoài
     document.querySelectorAll('.popup').forEach(p => {
       p.addEventListener('click', (e) => {
         if (e.target === p) p.style.display = 'none';
       });
     });
 
-    // đóng popup bằng phím Esc
+    // Đóng bằng Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
       }
     });
+    // ══════════════════════════════════════════════════
+    // MUSIC PLAYER
+    // ══════════════════════════════════════════════════
+    const bgMusic   = document.getElementById('bgMusic');
+    const player    = document.getElementById('musicPlayer');
+    const iconPlay  = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
+    const volSlider = document.getElementById('mpVolume');
+
+    // Âm lượng mặc định 70%
+    bgMusic.volume = 0.7;
+    volSlider.style.setProperty('--vol', '70%');
+
+    function toggleMusic() {
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      if (bgMusic.paused) {
+        bgMusic.play();
+        iconPlay.style.display  = 'none';
+        iconPause.style.display = 'block';
+        player.classList.add('is-playing');
+        // Mobile: mở panel 2 giây rồi thu lại
+        if (isTouch) {
+          player.classList.add('mp-expanded');
+          setTimeout(() => player.classList.remove('mp-expanded'), 2000);
+        }
+      } else {
+        bgMusic.pause();
+        iconPlay.style.display  = 'block';
+        iconPause.style.display = 'none';
+        player.classList.remove('is-playing');
+        player.classList.remove('mp-expanded');
+      }
+    }
+
+    function setVolume(val) {
+      bgMusic.volume = val;
+      // Cập nhật màu thanh gradient theo giá trị
+      volSlider.style.setProperty('--vol', (val * 100) + '%');
+    }
   </script>
+  <!-- ══════════════════════════════════════════════════
+       FAB BUTTONS — GÓC DƯỚI PHẢI
+       ══════════════════════════════════════════════════ -->
+  <div class="fab-group">
+
+    <!-- [ICON BẢN ĐỒ] ← THAY LINK MAP Ở ĐÂY -->
+    <a class="fab-item"
+       href="https://designdaovn.github.io/acgiaacbao-3dscene/"
+       target="_blank"
+       rel="noopener"
+       id="fabMap"
+       title="Xem bản đồ hiện trường">
+      <span class="fab-label">BẢN ĐỒ HIỆN TRƯỜNG</span>
+      <div class="fab-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path class="icon-default" d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- [ICON ZALO] ← THAY SỐ ĐIỆN THOẠI Ở ĐÂY
+         Định dạng: https://zalo.me/SỐ_ĐIỆN_THOẠI (bỏ số 0 đầu, thêm 84)
+         Ví dụ: 0901234567 → https://zalo.me/84901234567            -->
+    <a class="fab-item"
+       href="https://zalo.me/84358056699"
+       target="_blank"
+       rel="noopener"
+       id="fabZalo"
+       title="Nhắn tin Zalo">
+      <span class="fab-label">NHẮN TIN ZALO</span>
+      <div class="fab-btn">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path class="icon-default" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-6.5 12h9.75l-9.9 11.5H27v2.5H16.5l9.9-11.5H17.5V16zm13 16.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+        </svg>
+      </div>
+    </a>
+
+  </div>
+  <!-- ══════════════════════════════════════════════════ -->
+
 </body>
 </html>
-
